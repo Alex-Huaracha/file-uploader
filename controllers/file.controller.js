@@ -1,5 +1,6 @@
 import prisma from '../db/prismaClient.js';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 export const uploadFile = async (req, res, next) => {
   try {
@@ -30,6 +31,68 @@ export const uploadFile = async (req, res, next) => {
 
     req.flash('success_msg', 'File uploaded successfully!');
     res.redirect(redirectUrl);
+  } catch (err) {
+    return next(err);
+  }
+};
+
+export const getFileDetails = async (req, res, next) => {
+  try {
+    const fileId = req.params.id;
+    const userId = req.user.id;
+
+    const file = await prisma.file.findUnique({
+      where: {
+        id: fileId,
+        userId: userId,
+      },
+    });
+
+    if (!file) {
+      req.flash('error_msg', 'File not found.');
+      return res.redirect('/dashboard');
+    }
+
+    res.render('file-details', { file: file });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+export const downloadFile = async (req, res, next) => {
+  try {
+    const fileId = req.params.id;
+    const userId = req.user.id;
+
+    const file = await prisma.file.findUnique({
+      where: {
+        id: fileId,
+        userId: userId,
+      },
+    });
+
+    if (!file) {
+      req.flash('error_msg', 'File not found.');
+      return res.redirect('/dashboard');
+    }
+
+    const filePath = path.resolve(
+      process.cwd(),
+      'uploads',
+      userId,
+      file.storageId
+    );
+
+    res.download(filePath, file.name, (err) => {
+      if (err) {
+        console.error(err);
+        req.flash(
+          'error_msg',
+          'The file could not be downloaded. It may have been deleted.'
+        );
+        res.redirect('back');
+      }
+    });
   } catch (err) {
     return next(err);
   }
