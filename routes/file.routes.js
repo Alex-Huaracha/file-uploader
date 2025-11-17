@@ -4,6 +4,7 @@ import {
   getFileDetails,
   downloadFile,
   deleteFile,
+  renameFile,
 } from '../controllers/file.controller.js';
 import { isAuthenticated } from '../middleware/auth.middleware.js';
 import upload from '../middleware/upload.middleware.js';
@@ -26,5 +27,8 @@ router.get('/files/:id/download', isAuthenticated, downloadFile);
 
 // Delete file
 router.post('/files/:id/delete', isAuthenticated, deleteFile);
+
+// Rename file
+router.post('/files/:id/update', isAuthenticated, renameFile);
 
 export default router;

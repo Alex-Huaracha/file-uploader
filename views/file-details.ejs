@@ -12,6 +12,16 @@
     <hr />
 
     <h2><%= file.name %></h2>
+    <form action="/files/<%= file.id %>/update" method="POST" style="margin-bottom: 20px;">
+      <input
+      type="text"
+      name="newName"
+      placeholder="New name"
+      value="<%= file.name.replace(/\.[^/.]+$/, "") %>"
+      required
+      >
+      <button type="submit">Rename</button>
+    </form>
 
     <ul>
       <li>**ID:** <%= file.id %></li>

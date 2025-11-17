@@ -1,6 +1,5 @@
 import prisma from '../db/prismaClient.js';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import fs from 'fs/promises';
 
 export const uploadFile = async (req, res, next) => {
@@ -144,6 +143,45 @@ export const deleteFile = async (req, res, next) => {
     } else {
       res.redirect('/dashboard');
     }
+  } catch (err) {
+    return next(err);
+  }
+};
+
+export const renameFile = async (req, res, next) => {
+  try {
+    const fileId = req.params.id;
+    const { newName } = req.body;
+    const userId = req.user.id;
+
+    if (!newName) {
+      req.flash('error_msg', 'The new name cannot be empty.');
+      return res.redirect(`/files/${fileId}`);
+    }
+
+    const oldFile = await prisma.file.findUnique({
+      where: { id: fileId, userId: userId },
+    });
+
+    if (!oldFile) {
+      req.flash('error_msg', 'File not found.');
+      return res.redirect('/dashboard');
+    }
+
+    const oldExtension = path.extname(oldFile.name);
+    const finalName = newName + oldExtension;
+
+    await prisma.file.update({
+      where: {
+        id: fileId,
+      },
+      data: {
+        name: finalName,
+      },
+    });
+
+    req.flash('success_msg', 'File renamed successfully!');
+    res.redirect(`/files/${fileId}`);
   } catch (err) {
     return next(err);
   }
