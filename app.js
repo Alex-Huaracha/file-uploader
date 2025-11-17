@@ -7,8 +7,9 @@ import { PrismaSessionStore } from '@quixo3/prisma-session-store';
 import { PrismaClient } from '@prisma/client';
 import passport from 'passport';
 import configurePassport from './config/passport.js';
-import authRoutes from './routes/auth.routes.js';
 import flash from 'connect-flash';
+import authRoutes from './routes/auth.routes.js';
+import folderRoutes from './routes/folder.routes.js';
 
 dotenv.config();
 
@@ -58,6 +59,7 @@ app.use((req, res, next) => {
 
 // Routes
 app.use('/', authRoutes);
+app.use('/', folderRoutes);
 
 // Views
 app.set('views', path.join(__dirname, 'views'));
