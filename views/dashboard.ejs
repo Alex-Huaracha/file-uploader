@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en"></html>
+  <head>
+    <title>Dashboard</title>
+  </head>
+  <body>
+    <h1>Welcome to your Dashboard, <%= user.username %>!</h1>
+
+    <p>Your user ID is: <%= user.id %></p>
+
+    <form action="/logout" method="POST">
+      <button type="submit">Log Out</button>
+    </form>
+  </body>
+</html>

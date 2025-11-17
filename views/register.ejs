@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en"></html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register - File Uploader</title>
+  </head>
+  <body>
+    <% if (error_msg) { %>
+    <div
+      style="
+        color: red;
+        border: 1px solid red;
+        padding: 10px;
+        margin-bottom: 15px;
+      "
+    >
+      <%= error_msg %>
+    </div>
+    <% } %>
+    <h1>Create an Account</h1>
+
+    <form action="/register" method="POST">
+      <div>
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required />
+      </div>
+      <div>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required />
+      </div>
+      <button type="submit">Register</button>
+    </form>
+
+    <p>Already have an account? <a href="/login">Log in</a></p>
+  </body>
+</html>

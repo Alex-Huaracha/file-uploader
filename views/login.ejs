@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en"></html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - File Uploader</title>
+  </head>
+  <body>
+    <% if (success_msg) { %>
+    <div
+      style="
+        color: green;
+        border: 1px solid green;
+        padding: 10px;
+        margin-bottom: 15px;
+      "
+    >
+      <%= success_msg %>
+    </div>
+    <% } %> <% if (error_msg) { %>
+    <div
+      style="
+        color: red;
+        border: 1px solid red;
+        padding: 10px;
+        margin-bottom: 15px;
+      "
+    >
+      <%= error_msg %>
+    </div>
+    <% } %> <% if (error) { %>
+    <div
+      style="
+        color: red;
+        border: 1px solid red;
+        padding: 10px;
+        margin-bottom: 15px;
+      "
+    >
+      <%= error %>
+    </div>
+    <% } %>
+    <h1>Login</h1>
+
+    <form action="/login" method="POST">
+      <div>
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required />
+      </div>
+      <div>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required />
+      </div>
+      <button type="submit">Login</button>
+    </form>
+
+    <p>Don't have an account? <a href="/register">Register</a></p>
+  </body>
+</html>
