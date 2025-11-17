@@ -128,3 +128,31 @@ export const deleteFolder = async (req, res, next) => {
     return next(err);
   }
 };
+
+export const renameFolder = async (req, res, next) => {
+  try {
+    const folderId = req.params.id;
+    const { newName } = req.body;
+    const userId = req.user.id;
+
+    if (!newName) {
+      req.flash('error_msg', 'The new name cannot be empty.');
+      return res.redirect(`/folders/${folderId}`);
+    }
+
+    await prisma.folder.update({
+      where: {
+        id: folderId,
+        userId: userId,
+      },
+      data: {
+        name: newName,
+      },
+    });
+
+    req.flash('success_msg', 'Folder renamed successfully!');
+    res.redirect(`/folders/${folderId}`);
+  } catch (err) {
+    return next(err);
+  }
+};
