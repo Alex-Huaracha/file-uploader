@@ -48,9 +48,15 @@
 
     <h2>Files in this folder</h2>
     <ul>
-      <% if (files.length > 0) { %> <% files.forEach(file => { %>
-      <li><%= file.name %></li>
-      <% }) %> <% } else { %>
+      <% if (files.length > 0) { %>
+      <% files.forEach(file => { %>
+        <li>
+        <a href="/files/<%= file.id %>">
+          <%= file.name %>
+        </a>
+        </li>
+      <% }) %>
+      <% } else { %>
       <li>No files in this folder.</li>
       <% } %>
     </ul>

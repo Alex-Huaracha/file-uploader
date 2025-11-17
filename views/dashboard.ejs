@@ -47,13 +47,16 @@
     <h2>Files</h2>
     <ul>
       <% if (files.length > 0) { %>
-        <% files.forEach(file => { %>
-          <li>
-            <%= file.name %> (<%= file.mimetype %>)
-          </li>
-        <% }) %>
+      <% files.forEach(file => { %>
+        <li>
+        <a href="/files/<%= file.id %>">
+          <%= file.name %>
+        </a>
+        (<%= file.mimetype %>)
+        </li>
+      <% }) %>
       <% } else { %>
-        <li>No files available.</li>
+      <li>No files available.</li>
       <% } %>
     </ul>
   </body>
