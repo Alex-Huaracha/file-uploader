@@ -1,6 +1,7 @@
 import prisma from '../db/prismaClient.js';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import fs from 'fs/promises';
 
 export const uploadFile = async (req, res, next) => {
   try {
@@ -93,6 +94,56 @@ export const downloadFile = async (req, res, next) => {
         res.redirect('back');
       }
     });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+export const deleteFile = async (req, res, next) => {
+  try {
+    const fileId = req.params.id;
+    const userId = req.user.id;
+
+    const file = await prisma.file.findUnique({
+      where: {
+        id: fileId,
+        userId: userId,
+      },
+    });
+
+    if (!file) {
+      req.flash('error_msg', 'File not found or not authorized.');
+      return res.redirect('/dashboard');
+    }
+
+    const filePath = path.resolve(
+      process.cwd(),
+      'uploads',
+      userId,
+      file.storageId
+    );
+
+    try {
+      await fs.unlink(filePath);
+    } catch (fsErr) {
+      console.warn(
+        `The physical file was not found: ${filePath}, but the record will be deleted.`
+      );
+    }
+
+    await prisma.file.delete({
+      where: {
+        id: fileId,
+      },
+    });
+
+    req.flash('success_msg', 'File deleted successfully!');
+
+    if (file.folderId) {
+      res.redirect(`/folders/${file.folderId}`);
+    } else {
+      res.redirect('/dashboard');
+    }
   } catch (err) {
     return next(err);
   }
