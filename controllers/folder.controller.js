@@ -1,4 +1,6 @@
 import prisma from '../db/prismaClient.js';
+import fs from 'node:fs/promises';
+import path from 'node:path';
 
 export const postFolder = async (req, res, next) => {
   try {
@@ -62,6 +64,66 @@ export const getFolderById = async (req, res, next) => {
       folders: subFolders,
       files: files,
     });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+async function deleteFilesInFolder(folderId, userId) {
+  const files = await prisma.file.findMany({
+    where: { folderId: folderId, userId: userId },
+  });
+
+  const deleteFilePromises = files.map((file) => {
+    const filePath = path.resolve(
+      process.cwd(),
+      'uploads',
+      userId,
+      file.storageId
+    );
+    return fs.unlink(filePath).catch((err) => {
+      console.warn(`Physical file not found: ${filePath}`);
+    });
+  });
+  await Promise.all(deleteFilePromises);
+
+  const subFolders = await prisma.folder.findMany({
+    where: { parentId: folderId, userId: userId },
+  });
+
+  const deleteSubFolderPromises = subFolders.map((subFolder) =>
+    deleteFilesInFolder(subFolder.id, userId)
+  );
+  await Promise.all(deleteSubFolderPromises);
+}
+
+export const deleteFolder = async (req, res, next) => {
+  try {
+    const folderId = req.params.id;
+    const userId = req.user.id;
+
+    const folder = await prisma.folder.findUnique({
+      where: { id: folderId, userId: userId },
+    });
+
+    if (!folder) {
+      req.flash('error_msg', 'Folder not found.');
+      return res.redirect('/dashboard');
+    }
+
+    await deleteFilesInFolder(folderId, userId);
+
+    await prisma.folder.delete({
+      where: { id: folderId },
+    });
+
+    req.flash('success_msg', 'Folder and all its contents have been deleted!');
+
+    if (folder.parentId) {
+      res.redirect(`/folders/${folder.parentId}`);
+    } else {
+      res.redirect('/dashboard');
+    }
   } catch (err) {
     return next(err);
   }

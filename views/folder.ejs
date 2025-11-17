@@ -60,5 +60,17 @@
       <li>No files in this folder.</li>
       <% } %>
     </ul>
+
+    <hr>
+    <h2 style="color: red;">Danger Zone</h2>
+    <form
+      action="/folders/<%= currentFolder.id %>/delete"
+      method="POST"
+      onsubmit="return confirm('ARE YOU SURE?\nThis will permanently delete this folder and ALL subfolders and files it contains.');"
+    >
+      <button type="submit" style="background-color: red; color: white; border: none; padding: 10px 20px; cursor: pointer;">
+      Delete this Folder
+      </button>
+    </form>
   </body>
 </html>
