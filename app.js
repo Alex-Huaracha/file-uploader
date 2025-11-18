@@ -53,10 +53,10 @@ app.use(flash());
 
 // Middleware to set flash messages in res.locals
 app.use((req, res, next) => {
-  res.locals.user = req.user;
   res.locals.error_msg = req.flash('error_msg')[0];
   res.locals.success_msg = req.flash('success_msg')[0];
   res.locals.error = req.flash('error')[0];
+  res.locals.user = req.user || null;
   next();
 });
 
