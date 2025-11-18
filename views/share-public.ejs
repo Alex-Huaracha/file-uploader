@@ -1,80 +1,220 @@
 <!DOCTYPE html>
-<html lang="en"></html>
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Shared Folder: <%= folder.name %></title>
+    <link rel="stylesheet" href="/css/reset.css" />
+    <link rel="stylesheet" href="/css/variables.css" />
+    <link rel="stylesheet" href="/css/main.css" />
+    <link rel="stylesheet" href="/css/components.css" />
   </head>
-  <body
-    style="
-      font-family: sans-serif;
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 20px;
-    "
-  >
-    <div
-      style="
-        background-color: #eef;
-        padding: 20px;
-        border-radius: 8px;
-        margin-bottom: 20px;
-      "
-    >
-      <h1>📂 <%= folder.name %></h1>
-      <p>
-        Shared by: <strong><%= owner.username %></strong><br />
-        Expires on: <%= shareLink.expiresAt.toLocaleDateString() %>
-      </p>
-    </div>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar">
+      <div class="container nav-content">
+        <div class="nav-brand">📁 File Uploader</div>
+        <div class="nav-links">
+          <a href="/" class="nav-link">Home</a>
+          <a href="/login" class="btn btn-primary btn-sm">Sign In</a>
+        </div>
+      </div>
+    </nav>
 
-    <h3>Folders</h3>
-    <ul>
-      <% if (folders.length > 0) { %> <% folders.forEach(subfolder => { %>
-      <li>
-        📁 <%= subfolder.name %>
-        <span style="color: #666; font-size: 0.8em">(Subfolder)</span>
-      </li>
-      <% }) %> <% } else { %>
-      <li style="color: #888">No subfolders.</li>
-      <% } %>
-    </ul>
-    <p>
-      <em
-        >Note: Navigation into subfolders is not enabled in the simple public
-        view.</em
+    <!-- Main Content -->
+    <div class="container container-sm">
+      <!-- Share Info Card -->
+      <div
+        class="card"
+        style="
+          margin-bottom: 2rem;
+          border-left: 4px solid var(--accent-primary);
+        "
       >
-    </p>
-
-    <h3>Files</h3>
-    <ul>
-      <% if (files.length > 0) { %> <% files.forEach(file => { %>
-      <li style="margin-bottom: 10px">
-        📄 <%= file.name %> (<%= (file.size / 1024).toFixed(1) %> KB)
-        <a
-          href="<%= file.url %>"
-          target="_blank"
+        <div
           style="
-            background-color: #28a745;
-            color: white;
-            text-decoration: none;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.9em;
-            margin-left: 10px;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
           "
         >
-          Download
-        </a>
-      </li>
-      <% }) %> <% } else { %>
-      <li style="color: #888">No files.</li>
-      <% } %>
-    </ul>
+          <div style="font-size: 3rem">📂</div>
+          <div>
+            <h1
+              style="
+                font-size: 1.75rem;
+                font-weight: 700;
+                margin-bottom: 0.25rem;
+              "
+            >
+              <%= folder.name %>
+            </h1>
+            <p style="color: var(--text-secondary); font-size: 0.875rem">
+              Shared folder
+            </p>
+          </div>
+        </div>
 
-    <hr />
-    <p style="text-align: center">
-      <a href="/">Create my own account on File Uploader</a>
-    </p>
+        <div
+          style="
+            display: grid;
+            gap: 0.5rem;
+            padding: 1rem;
+            background-color: var(--bg-tertiary);
+            border-radius: var(--radius-md);
+          "
+        >
+          <div style="display: flex; justify-content: space-between">
+            <span style="color: var(--text-secondary)">Shared by:</span>
+            <strong style="color: var(--text-primary)"
+              ><%= owner.username %></strong
+            >
+          </div>
+          <div style="display: flex; justify-content: space-between">
+            <span style="color: var(--text-secondary)">Expires on:</span>
+            <strong style="color: var(--accent-warning)"
+              ><%= shareLink.expiresAt.toLocaleDateString() %></strong
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- Folders Section -->
+      <section style="margin-bottom: 3rem">
+        <h2
+          style="
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+          "
+        >
+          📂 Subfolders
+        </h2>
+
+        <% if (folders.length > 0) { %>
+        <div class="grid grid-2">
+          <% folders.forEach(subfolder => { %>
+          <div class="folder-item" style="opacity: 0.7">
+            <div class="item-icon">📁</div>
+            <div class="item-info">
+              <div class="item-name"><%= subfolder.name %></div>
+              <div class="item-meta">View only</div>
+            </div>
+          </div>
+          <% }) %>
+        </div>
+        <div
+          style="
+            margin-top: 1rem;
+            padding: 0.75rem;
+            background-color: var(--bg-tertiary);
+            border-radius: var(--radius-md);
+            border-left: 3px solid var(--accent-warning);
+          "
+        >
+          <p style="font-size: 0.875rem; color: var(--text-secondary)">
+            ℹ️ Navigation into subfolders is not available in shared view
+          </p>
+        </div>
+        <% } else { %>
+        <div class="empty-state">
+          <div class="empty-state-icon">📁</div>
+          <p class="empty-state-text">No subfolders in this shared folder</p>
+        </div>
+        <% } %>
+      </section>
+
+      <!-- Files Section -->
+      <section style="margin-bottom: 3rem">
+        <h2
+          style="
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+          "
+        >
+          📄 Files
+        </h2>
+
+        <% if (files.length > 0) { %>
+        <div class="grid grid-2">
+          <% files.forEach(file => { %>
+          <div class="file-item">
+            <div class="item-icon">
+              <% if (file.mimetype.startsWith('image/')) { %> 🖼️ <% } else if
+              (file.mimetype.startsWith('video/')) { %> 🎥 <% } else if
+              (file.mimetype.includes('pdf')) { %> 📕 <% } else if
+              (file.mimetype.includes('zip') || file.mimetype.includes('rar')) {
+              %> 📦 <% } else { %> 📄 <% } %>
+            </div>
+            <div class="item-info">
+              <div class="item-name"><%= file.name %></div>
+              <div class="item-meta">
+                <%= (file.size / 1024).toFixed(2) %> KB
+              </div>
+            </div>
+            <div class="item-actions">
+              <a
+                href="<%= file.url %>"
+                target="_blank"
+                class="btn btn-success btn-sm"
+              >
+                ⬇️ Download
+              </a>
+            </div>
+          </div>
+          <% }) %>
+        </div>
+        <% } else { %>
+        <div class="empty-state">
+          <div class="empty-state-icon">📄</div>
+          <p class="empty-state-text">No files in this shared folder</p>
+        </div>
+        <% } %>
+      </section>
+
+      <!-- CTA Card -->
+      <div
+        class="card"
+        style="
+          text-align: center;
+          background: linear-gradient(
+            135deg,
+            var(--bg-secondary) 0%,
+            var(--bg-tertiary) 100%
+          );
+          border: 1px solid var(--accent-primary);
+        "
+      >
+        <div style="margin-bottom: 1rem">
+          <h3
+            style="font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem"
+          >
+            Like what you see?
+          </h3>
+          <p style="color: var(--text-secondary)">
+            Create your own account and start organizing your files
+          </p>
+        </div>
+        <div
+          style="
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+          "
+        >
+          <a href="/register" class="btn btn-primary"> Create Account </a>
+          <a href="/login" class="btn btn-secondary"> Sign In </a>
+        </div>
+      </div>
+    </div>
   </body>
 </html>
