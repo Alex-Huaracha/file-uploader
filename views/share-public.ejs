@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en"></html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shared Folder: <%= folder.name %></title>
+  </head>
+  <body
+    style="
+      font-family: sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    "
+  >
+    <div
+      style="
+        background-color: #eef;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+      "
+    >
+      <h1>📂 <%= folder.name %></h1>
+      <p>
+        Shared by: <strong><%= owner.username %></strong><br />
+        Expires on: <%= shareLink.expiresAt.toLocaleDateString() %>
+      </p>
+    </div>
+
+    <h3>Folders</h3>
+    <ul>
+      <% if (folders.length > 0) { %> <% folders.forEach(subfolder => { %>
+      <li>
+        📁 <%= subfolder.name %>
+        <span style="color: #666; font-size: 0.8em">(Subfolder)</span>
+      </li>
+      <% }) %> <% } else { %>
+      <li style="color: #888">No subfolders.</li>
+      <% } %>
+    </ul>
+    <p>
+      <em
+        >Note: Navigation into subfolders is not enabled in the simple public
+        view.</em
+      >
+    </p>
+
+    <h3>Files</h3>
+    <ul>
+      <% if (files.length > 0) { %> <% files.forEach(file => { %>
+      <li style="margin-bottom: 10px">
+        📄 <%= file.name %> (<%= (file.size / 1024).toFixed(1) %> KB)
+        <a
+          href="<%= file.url %>"
+          target="_blank"
+          style="
+            background-color: #28a745;
+            color: white;
+            text-decoration: none;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            margin-left: 10px;
+          "
+        >
+          Download
+        </a>
+      </li>
+      <% }) %> <% } else { %>
+      <li style="color: #888">No files.</li>
+      <% } %>
+    </ul>
+
+    <hr />
+    <p style="text-align: center">
+      <a href="/">Create my own account on File Uploader</a>
+    </p>
+  </body>
+</html>
